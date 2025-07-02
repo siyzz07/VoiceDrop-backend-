@@ -1,31 +1,29 @@
-
-
-import { log } from "node:console";
-import express from 'express'
-import dotenv from 'dotenv'
+import express from "express";
+import http from "http";
+import dotenv from "dotenv";
+import cors from "cors";
 import connectDB from "./config/connectDB";
+import { initializeSocket } from "./realtimeCommunication.ts/connect";
+import { database } from "./realtimeCommunication.ts/db_update";
 import userRoute from "./routes/userRoutes";
-import cors from 'cors'
-const app=express()
-dotenv.config()
 
-connectDB()
-const port=process.env.PORT
+dotenv.config();
+
+const app = express();
+const httpServer = http.createServer(app);
+connectDB();
+
+
 
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
-app.use(cors({
-  origin:"http://localhost:5173",
-  credentials:true
-}))
+const PORT = process.env.PORT || 7000;
 
+const io = initializeSocket(httpServer);
+database(io);
 
+app.use("/api", userRoute);
 
-app.use('/api',userRoute)
-
-app.listen(port,()=>{
-    console.log(`Server is running..... on port ${port}`);
-    
-})
+httpServer.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
