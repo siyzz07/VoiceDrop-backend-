@@ -2,7 +2,8 @@ import { Server } from "socket.io";
 import room_repositore from "../repositories/room_repositore";
 import roomSevice from "../services/room-sevice";
 import Room from "../model/room-model";
-import { log } from "node:console";
+import { error, log } from "node:console";
+import roomController from "../controllers/room-controller";
 
 export const initializeSocket = (httpServer: any) => {
   const io = new Server(httpServer, {
@@ -70,6 +71,23 @@ io.on("connection", (socket) => {
       console.error("Error handling exit-participant:", error);
     }
   });
+
+
+  // delete room 
+ socket.on('deleteRoom', async (roomId: string) => {
+  try {
+    
+    await roomSevice.roomDelete(roomId); 
+    io.to(roomId).emit('roomDeleted') 
+  } catch (error: any) {
+    console.error('Error deleting room:', error);
+    socket.emit('error', { message: 'Failed to delete room', roomId });
+  }
+});
+
+socket.on("roomRmovel",(roomId)=>{
+  io.to(roomId).emit("romovelCoundown")
+})
 
   
 

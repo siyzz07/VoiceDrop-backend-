@@ -12,8 +12,11 @@ export type room = {
 class RoomRepositories {
   //------- create room -----
   async createRoom(values: room) {
-    const { owner, topic, roomType, password } = values;
+    let { owner, topic, roomType, password } = values;
     const roomId = uuidv4();
+    if(roomType == "Private"){
+        password = uuidv4()
+    }
 
     const newRoom = new Room({
       roomId,
@@ -92,6 +95,14 @@ class RoomRepositories {
     { roomId },
     { $pull: { participants: userId } }
   );
+  }
+
+  // delete specific room
+  async deleteRoom(roomId:string){
+
+    await Room.deleteOne({roomId:roomId})
+    return 
+
   }
 }
 

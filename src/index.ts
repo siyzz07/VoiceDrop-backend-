@@ -19,7 +19,7 @@ connectDB();
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
-const PORT = process.env.PORT || 7000;
+const PORT = process.env.PORT || 7001;
 
 const io = initializeSocket(httpServer);
 database(io);

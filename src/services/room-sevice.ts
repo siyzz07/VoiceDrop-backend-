@@ -38,7 +38,10 @@ class RoomService {
     return room
     
   }
-
+// ------------------------------------ Delete room service
+async roomDelete(roomId:string){
+     await room_repositore.deleteRoom(roomId)
+}
 
 
 }

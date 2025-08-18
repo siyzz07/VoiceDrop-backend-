@@ -7,6 +7,7 @@ class RoomController {
   //-------- create a user -----------------
   async createRoom(req: Request, res: Response): Promise<any> {
     try {
+  console.log("eraeee");
   
       
       req.body.owner = req.user.userId;
@@ -40,6 +41,11 @@ class RoomController {
       console.log(error.message);
     }
   }
+
+
+
+
+
 }
 
 export default new RoomController();
