@@ -8,8 +8,12 @@ interface SendEmailOptions {
 }
 
 class EmailService {
- 
-  async sendEmail({ to, subject, text, html }: SendEmailOptions): Promise<void> {
+  async sendEmail({
+    to,
+    subject,
+    text,
+    html,
+  }: SendEmailOptions): Promise<void> {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to,

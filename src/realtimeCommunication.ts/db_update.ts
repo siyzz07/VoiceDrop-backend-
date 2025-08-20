@@ -11,32 +11,24 @@ export const database = (io: any) => {
 
     const collection = db.collection("rooms");
 
-   
     const changeStream = collection.watch();
-       
-    
-    changeStream.on("change", async (change: any) => {
 
+    changeStream.on("change", async (change: any) => {
       try {
-        
         const allDocuments = await collection.find({}).toArray();
 
-     
-       
         io.emit("data-updated", allDocuments);
       } catch (err) {
         console.error("Error fetching documents after change:", err);
       }
     });
 
-  
     changeStream.on("error", (err) => {
       console.error("Change stream error:", err);
     });
 
     changeStream.on("close", () => {
       console.log("Change stream closed. Attempting to reconnect...");
-      
     });
   });
 };

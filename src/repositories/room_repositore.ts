@@ -14,8 +14,8 @@ class RoomRepositories {
   async createRoom(values: room) {
     let { owner, topic, roomType, password } = values;
     const roomId = uuidv4();
-    if(roomType == "Private"){
-        password = uuidv4()
+    if (roomType == "Private") {
+      password = uuidv4();
     }
 
     const newRoom = new Room({
@@ -59,9 +59,8 @@ class RoomRepositories {
     return room.participants;
   }
 
-
   //-------------------- get datas of specific rooms
-   async getSpecificRoomData(roomId:any){
+  async getSpecificRoomData(roomId: any) {
     const room = await Room.findOne({ roomId }).populate(
       "participants",
       "name"
@@ -70,8 +69,8 @@ class RoomRepositories {
       console.log("Room not found");
       return;
     }
-    return room
-   }
+    return room;
+  }
 
   //--------------------- add users to specific rooms
   async addParticipants(roomId: any, userId: any) {
@@ -90,19 +89,13 @@ class RoomRepositories {
 
   // remove user from particular room
   async romovePaticipant(roomId: any, userId: any) {
-
-    await Room.updateOne(
-    { roomId },
-    { $pull: { participants: userId } }
-  );
+    await Room.updateOne({ roomId }, { $pull: { participants: userId } });
   }
 
   // delete specific room
-  async deleteRoom(roomId:string){
-
-    await Room.deleteOne({roomId:roomId})
-    return 
-
+  async deleteRoom(roomId: string) {
+    await Room.deleteOne({ roomId: roomId });
+    return;
   }
 }
 

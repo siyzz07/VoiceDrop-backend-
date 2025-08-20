@@ -66,6 +66,13 @@ io.on("connection", (socket) => {
     try {
       await roomSevice.removeParticipant(roomId, userId);
       const roomParticipants = await roomSevice.roomUsers(roomId);
+      console.log('roomParticipants :>> ', roomParticipants);
+      if(roomParticipants?.length == 0){
+
+        await roomSevice.roomDelete(roomId)
+        //  io.to(roomId).emit('room-delete')
+         return 
+      }
       io.to(roomId).emit("users-data", roomParticipants);
     } catch (error) {
       console.error("Error handling exit-participant:", error);
@@ -74,11 +81,11 @@ io.on("connection", (socket) => {
 
 
   // delete room 
- socket.on('deleteRoom', async (roomId: string) => {
+ socket.on('delete-Room', async (roomId: string) => {
   try {
-    
+          
     await roomSevice.roomDelete(roomId); 
-    io.to(roomId).emit('roomDeleted') 
+    io.emit('roomDeleted') 
   } catch (error: any) {
     console.error('Error deleting room:', error);
     socket.emit('error', { message: 'Failed to delete room', roomId });

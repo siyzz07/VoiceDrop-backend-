@@ -13,7 +13,7 @@ class AuthController {
   
   async VarifyNumber(req: Request, res: Response) {
     const generateOtp = await otpService.generateOtp();
-    console.log(generateOtp);
+
   }
 
   //---------------------------- verify eamil -----------------------------
@@ -27,7 +27,7 @@ class AuthController {
         to: email,
         subject: "Welcome to Voice Drop",
         text: `Thank you for signing up. Your OTP is ${otp}. Keep your OTP safe.`,
-        // html: `<h1>Welcome!</h1><p>Your OTP is <strong>${otp}</strong></p>`, // optional HTML email
+        
       });
 
       await otpService.saveUserOtp(email, otp);
