@@ -23,6 +23,6 @@ database(io);
 
 app.use("/api", userRoute);
 
-httpServer.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+// httpServer.listen(PORT, () =>
+//   console.log(`Server running on http://localhost:${PORT}`)
+// );
