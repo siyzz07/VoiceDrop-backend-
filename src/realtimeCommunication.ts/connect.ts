@@ -10,7 +10,7 @@ export const initializeSocket = (httpServer: any) => {
     cors: {
       origin: ["https://voicedrop.vercel.app"],
       methods: ["GET", "POST"],
-      credentials: false,
+      credentials: true,
     },
   });
 io.on("connection", (socket) => {
