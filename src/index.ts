@@ -14,7 +14,7 @@ const httpServer = http.createServer(app);
 connectDB();
 
 app.use(express.json());
-app.use(cors({ origin: "*", credentials: true }));
+app.use(cors({ origin: "*", methods: ["GET", "POST"], credentials: true }));
 
 const PORT = process.env.PORT || 7001;
 
