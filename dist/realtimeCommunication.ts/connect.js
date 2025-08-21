@@ -11,7 +11,7 @@ const room_model_1 = __importDefault(require("../model/room-model"));
 const initializeSocket = (httpServer) => {
     const io = new socket_io_1.Server(httpServer, {
         cors: {
-            origin: "http://localhost:5173",
+            origin: ["https://voicedrop.vercel.app"],
             methods: ["GET", "POST"],
             credentials: true,
         },

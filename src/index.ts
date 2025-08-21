@@ -23,7 +23,8 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5173", // local dev
-  "https://voicedrop.vercel.app" // production
+  "https://voicedrop.vercel.app",
+"https://voice-drop-frontend.vercel.app"
 ];
 
 app.use(cors({
