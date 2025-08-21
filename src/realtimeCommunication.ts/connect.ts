@@ -10,7 +10,7 @@ export const initializeSocket = (httpServer: any) => {
     cors: {
       origin: "*",
       methods: ["GET", "POST"],
-      credentials: true,
+      credentials: false,
     },
   });
 io.on("connection", (socket) => {
