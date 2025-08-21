@@ -14,7 +14,7 @@ const httpServer = http.createServer(app);
 connectDB();
 
 app.use(express.json());
-app.use(cors({ origin: "https://voicedrop.vercel.app", methods: ["GET", "POST"], credentials: true }));
+app.use(cors({ origin: "http://localhost:5173/", methods: ["GET", "POST"], credentials: true }));
 
 const PORT = process.env.PORT || 7001;
 
@@ -23,6 +23,6 @@ database(io);
 
 app.use("/api", userRoute);
 
-// httpServer.listen(PORT, () =>
-//   console.log(`Server running on http://localhost:${PORT}`)
-// );
+httpServer.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+);
