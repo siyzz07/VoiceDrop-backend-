@@ -14,7 +14,7 @@ const httpServer = http.createServer(app);
 connectDB();
 
 app.use(express.json());
-app.use(cors({ origin: "https://voicedrop.vercel.app/", credentials: true }));
+app.use(cors({ origin: "https://voicedrop.vercel.app", credentials: true }));
 
 const PORT = process.env.PORT || 7001;
 
