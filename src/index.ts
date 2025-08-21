@@ -13,8 +13,14 @@ const app = express();
 const httpServer = http.createServer(app);
 connectDB();
 
+// const allowedOrigins = [
+//   'http://localhost:5173',
+//   'https://voicedrop.vercel.app'
+// ];
+
+
 app.use(express.json());
-app.use(cors({ origin: "http://localhost:5173/", methods: ["GET", "POST"], credentials: true }));
+app.use(cors({ origin: ['https://voicedrop.vercel.app'], methods: ["GET", "POST"], credentials: true }));
 
 const PORT = process.env.PORT || 7001;
 

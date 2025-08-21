@@ -8,7 +8,7 @@ import roomController from "../controllers/room-controller";
 export const initializeSocket = (httpServer: any) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:5173/",
+      origin: ["https://voicedrop.vercel.app"],
       methods: ["GET", "POST"],
       credentials: false,
     },
