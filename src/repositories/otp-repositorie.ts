@@ -2,16 +2,27 @@ import UserOtp from "../model/user-otp-model";
 import otpService from "../services/otp-service";
 
 class OtpRepositories {
-  async saveUserOpt(email: string, otp: string): Promise<any> {
-    const userOtp = new UserOtp({
-      email,
-      otp,
-      createdAt: Date.now(),
-    });
-    userOtp.save();
-  }
 
-  async checkOtpMatch(email: string, otp: string): Promise<any> {
+
+
+
+ async saveUserOpt(email: string, otp: string): Promise<any> {
+  await UserOtp.updateOne(
+    { email }, 
+    { 
+      $set: { 
+        otp, 
+        createdAt: Date.now() 
+      } 
+    },
+    { upsert: true } 
+  );
+}
+
+
+
+
+async checkOtpMatch(email: string, otp: string): Promise<any> {
     const check = await UserOtp.findOne({ email });
     if (!check) {
       return {

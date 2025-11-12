@@ -5,6 +5,28 @@ import Room from "../model/room-model";
 import { error, log } from "node:console";
 import roomController from "../controllers/room-controller";
 
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * 
+ * send room data --
+ * add joining room -- add participants --
+ * get users in the room
+ * exit form the room
+ * delete from the room
+ */
+
+
+
 export const initializeSocket = (httpServer: any) => {
   const io = new Server(httpServer, {
     cors: {

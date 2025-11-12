@@ -1,7 +1,7 @@
 import User from "../model/user-model";
 
 class UserRepositories {
-  //--------------------------------------------
+  //--------------------------------------------check user Exist
   async checkUsrExist(email: string) {
     let user = await User.findOne({ email: email });
     return user;

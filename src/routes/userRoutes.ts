@@ -6,7 +6,6 @@ import { verifyToken } from "../middleware/auth_middleware";
 const userRoute = express.Router();
 
 //----------------------------------register user
-userRoute.post("/verify", authController.VarifyNumber);
 userRoute.post("/emailVerify", authController.varifyEmail);
 userRoute.post("/checkOtp", authController.checkOtp);
 userRoute.post("/registerUser", authController.registerUser);

@@ -14,6 +14,7 @@ class EmailService {
     text,
     html,
   }: SendEmailOptions): Promise<void> {
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to,
@@ -23,6 +24,7 @@ class EmailService {
     };
 
     try {
+
       const info = await transporter.sendMail(mailOptions);
       console.log("Email sent: " + info.response);
     } catch (error) {
