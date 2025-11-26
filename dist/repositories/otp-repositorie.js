@@ -4,31 +4,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_otp_model_1 = __importDefault(require("../model/user-otp-model"));
-class OtpRepositories {
-    async saveUserOpt(email, otp) {
-        const userOtp = new user_otp_model_1.default({
-            email,
-            otp,
-            createdAt: Date.now(),
-        });
-        userOtp.save();
+class OtpRepository {
+    // Save or update OTP
+    async saveOtp(email, otp) {
+        await user_otp_model_1.default.updateOne({ email }, {
+            $set: {
+                otp,
+                createdAt: new Date(),
+            },
+        }, { upsert: true });
     }
-    async checkOtpMatch(email, otp) {
-        const check = await user_otp_model_1.default.findOne({ email });
-        if (!check) {
-            return {
-                checkValue: false,
-                message: "OTP has expired. Please request a new one.",
-            };
-        }
-        else {
-            if (check.otp == otp) {
-                return { checkValue: true, message: "success" };
-            }
-            else {
-                return { checkValue: false, message: "Invalid OTP. Please try again." };
-            }
-        }
+    // Fetch OTP by email
+    async findOtpByEmail(email) {
+        return await user_otp_model_1.default.findOne({ email });
+    }
+    // Delete OTP
+    async deleteOtp(email) {
+        return await user_otp_model_1.default.deleteOne({ email });
     }
 }
-exports.default = new OtpRepositories();
+exports.default = new OtpRepository();

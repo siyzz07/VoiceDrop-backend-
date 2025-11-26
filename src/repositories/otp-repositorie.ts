@@ -1,42 +1,30 @@
 import UserOtp from "../model/user-otp-model";
-import otpService from "../services/otp-service";
 
-class OtpRepositories {
+class OtpRepository {
 
+  // Save or update OTP
+  async saveOtp(email: string, otp: string): Promise<void> {
+    await UserOtp.updateOne(
+      { email },
+      {
+        $set: {
+          otp,
+          createdAt: new Date(),
+        },
+      },
+      { upsert: true }
+    );
+  }
 
+  // Fetch OTP by email
+  async findOtpByEmail(email: string) {
+    return await UserOtp.findOne({ email });
+  }
 
-
- async saveUserOpt(email: string, otp: string): Promise<any> {
-  await UserOtp.updateOne(
-    { email }, 
-    { 
-      $set: { 
-        otp, 
-        createdAt: Date.now() 
-      } 
-    },
-    { upsert: true } 
-  );
-}
-
-
-
-
-async checkOtpMatch(email: string, otp: string): Promise<any> {
-    const check = await UserOtp.findOne({ email });
-    if (!check) {
-      return {
-        checkValue: false,
-        message: "OTP has expired. Please request a new one.",
-      };
-    } else {
-      if (check.otp == otp) {
-        return { checkValue: true, message: "success" };
-      } else {
-        return { checkValue: false, message: "Invalid OTP. Please try again." };
-      }
-    }
+  // Delete OTP
+  async deleteOtp(email: string) {
+    return await UserOtp.deleteOne({ email });
   }
 }
 
-export default new OtpRepositories();
+export default new OtpRepository();

@@ -11,9 +11,11 @@ SERVER_ERROR='Server error',
 
 
 //-------------------------------otp
-OPT_SEND_SUCCESS ='OTP send successfully',
-OTP_MATCH_FAILED ='Invalied otp',
-OTP_MATCH_SUCCESS ='success'
+OTP_SEND_SUCCESS = 'OTP sent successfully',
+OTP_RESEND_SUCCESS = 'OTP resent successfully',
+OTP_MATCH_FAILED = 'Invalid OTP',
+OTP_MATCH_SUCCESS = 'OTP matched successfully',
+OTP_EXPIRED = 'OTP expired. Please request a new one'
 
 
 }

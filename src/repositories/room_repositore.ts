@@ -1,102 +1,86 @@
-import { log } from "console";
-import Room from "../model/room-model";
-import { v4 as uuidv4 } from "uuid";
+// import Room from "../model/room-model";
+// import { v4 as uuidv4 } from "uuid";
 
-export type room = {
-  owner: string;
-  topic: string;
-  roomType: string;
-  password?: string;
-};
+// export type RoomInput = {
+//   owner: string;
+//   topic: string;
+//   roomType: "Public" | "Private";
+//   password?: string;
+// };
 
-class RoomRepositories {
-  //------- create room -----
-  async createRoom(values: room) {
-    let { owner, topic, roomType, password } = values;
-    const roomId = uuidv4();
-    if (roomType == "Private") {
-      password = uuidv4();
-    }
+// class RoomRepository {
 
-    const newRoom = new Room({
-      roomId,
-      owner,
-      topic,
-      type: roomType,
-      password,
-    });
+//   // Create a new room
+//   async createRoom({ owner, topic, roomType, password }: RoomInput) {
+//     const roomId = uuidv4();
 
-    let room = newRoom.save();
-    return room;
-  }
+//     // Auto-generate password for private room
+//     if (roomType === "Private") {
+//       password = uuidv4();
+//     }
 
-  //----- get room data ----------
-  async getRoomData() {
-    let room = await Room.find({});
-    return room;
-  }
+//     const room = new Room({
+//       roomId,
+//       owner,
+//       topic,
+//       type: roomType,
+//       password,
+//     });
 
-  //---------------check the romm exist or not -------------
-  async getRoomExist(roomId: string) {
-    let room = await Room.find({ roomId: roomId });
+//     return await room.save();
+//   }
 
-    if (room.length != 0) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-  //---------------- specific room users----------------
-  async getRoomUsers(roomId: string) {
-    const room = await Room.findOne({ roomId }).populate(
-      "participants",
-      "name"
-    );
-    if (!room) {
-      console.log("Room not found");
-      return;
-    }
-    return room.participants;
-  }
+//   // Get all rooms
+//   async getAllRooms() {
+//     return await Room.find({});
+//   }
 
-  //-------------------- get datas of specific rooms
-  async getSpecificRoomData(roomId: any) {
-    const room = await Room.findOne({ roomId }).populate(
-      "participants",
-      "name"
-    );
-    if (!room) {
-      console.log("Room not found");
-      return;
-    }
-    return room;
-  }
+//   // Check if room exists
+//   async roomExists(roomId: string) {
+//     const room = await Room.findOne({ roomId });
+//     return !!room;   
+//   }
 
-  //--------------------- add users to specific rooms
-  async addParticipants(roomId: any, userId: any) {
-    const room = await Room.findOne({ roomId: roomId });
+//   // Get participants of a specific room
+//   async getRoomUsers(roomId: string) {
+//     const room = await Room.findOne({ roomId }).populate(
+//       "participants",
+//       "name"
+//     );
 
-    if (!room) {
-      return;
-    }
+//     return room?.participants || null;
+//   }
 
-    if (room.participants.includes(userId)) {
-      return;
-    }
-    room.participants.push(userId);
-    await room.save();
-  }
+//   // Get full room data
+//   async getRoomById(roomId: string) {
+//     return await Room.findOne({ roomId }).populate("participants", "name");
+//   }
 
-  // remove user from particular room
-  async romovePaticipant(roomId: any, userId: any) {
-    await Room.updateOne({ roomId }, { $pull: { participants: userId } });
-  }
+//   // Add participant to room
+//   async addParticipant(roomId: string, userId: string) {
+//     const room = await Room.findOne({ roomId });
+//     if (!room) return null;
 
-  // delete specific room
-  async deleteRoom(roomId: string) {
-    await Room.deleteOne({ roomId: roomId });
-    return;
-  }
-}
+//     if (!room.participants.includes(userId)) {
+//       room.participants.push(userId);
+//       await room.save();
+//     }
 
-export default new RoomRepositories();
+//     return room;
+//   }
+
+//   // Remove participant
+//   async removeParticipant(roomId: string, userId: string) {
+//     return await Room.updateOne(
+//       { roomId },
+//       { $pull: { participants: userId } }
+//     );
+//   }
+
+//   // Delete room
+//   async deleteRoom(roomId: string) {
+//     return await Room.deleteOne({ roomId });
+//   }
+// }
+
+// export default new RoomRepository();

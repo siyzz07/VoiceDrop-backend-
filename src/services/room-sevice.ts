@@ -1,45 +1,46 @@
-import { log } from "console";
-import room_repositore, { room } from "../repositories/room_repositore";
+// import roomRepository, { RoomInput } from "../repositories/room_repositore";
 
-class RoomService {
-  //--------add room---------
-  async addRoom(values: room) {
-    let room = await room_repositore.createRoom(values);
-    return room;
-  }
+// class RoomService {
 
-  //------ check the room exist or not
-  async roomExistCheck(roomId: string) {
-    let checkValue = await room_repositore.getRoomExist(roomId);
+//   // Create room
+//   async createRoom(data: RoomInput) {
+//     return await roomRepository.createRoom(data);
+//   }
 
-    return checkValue;
-  }
+//   // Check room existence
+//   async roomExists(roomId: string) {
+//     return await roomRepository.roomExists(roomId);
+//   }
 
-  // -----------------add users to specific room
-  async addPrticipants(roomId: any, userId: any) {
-    await room_repositore.addParticipants(roomId, userId);
-  }
+//   // Add participant
+//   async addParticipant(roomId: string, userId: string) {
+//     return await roomRepository.addParticipant(roomId, userId);
+//   }
 
-  //----------------take specific room users
-  async roomUsers(roomId: string) {
-    let users = await room_repositore.getRoomUsers(roomId);
-    return users;
-  }
+//   // Get users of a room
+//   async getRoomUsers(roomId: string) {
+//     return await roomRepository.getRoomUsers(roomId);
+//   }
 
-  // ----------------- remove participants from particular room
-  async removeParticipant(roomId: any, userId: any) {
-    await room_repositore.romovePaticipant(roomId, userId);
-  }
+//   // Remove participant
+//   async removeParticipant(roomId: string, userId: string) {
+//     return await roomRepository.removeParticipant(roomId, userId);
+//   }
 
-  //-------------------- get datas of specific rooms
-  async specificRoomdata(roomId: string) {
-    let room = await room_repositore.getSpecificRoomData(roomId);
-    return room;
-  }
-  // ------------------------------------ Delete room service
-  async roomDelete(roomId: string) {
-    await room_repositore.deleteRoom(roomId);
-  }
-}
+//   // Get full room data
+//   async getRoomData(roomId: string) {
+//     return await roomRepository.getRoomById(roomId);
+//   }
 
-export default new RoomService();
+//   // Delete room
+//   async deleteRoom(roomId: string) {
+//     return await roomRepository.deleteRoom(roomId);
+//   }
+
+//   // Get all rooms
+//   async getAllRooms() {
+//     return await roomRepository.getAllRooms();
+//   }
+// }
+
+// export default new RoomService();

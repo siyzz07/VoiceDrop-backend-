@@ -1,38 +1,40 @@
-import { log } from "console";
+import userRepository from "../repositories/user-repositories";
 import hashPassword from "../utils/hashPassword";
-import userRepositories from "../repositories/user-repositories";
-import emailService from "./email-service";
 import comparePassword from "../utils/comparePassword";
 
-class UserServices {
-  //-----------------------------------------chek user exist
+class UserService {
+
+  // Check if user exists
   async checkUserExist(email: string) {
-    const User = await userRepositories.checkUsrExist(email);
-    if (User) {
-      return User;
-    } else {
-      return false;
-    }
+    const user = await userRepository.findByEmail(email);
+    return user || false;
   }
 
-  //-------------------------------------------compare passowrd
-  async comparePassword(eamil: string, passowrd: string) {
-    let user = await userRepositories.findUser(eamil);
-    let compare = await comparePassword.passwordCompare(
-      passowrd,
-      user?.password
+  // Compare passwords
+  async validatePassword(email: string, plainPassword: string) {
+    const user = await userRepository.findByEmail(email);
+    if (!user) return false;
+
+    return await comparePassword.passwordCompare(
+      plainPassword,
+      user.password
     );
-    return compare;
   }
 
-  //------------------------------------------- register user
-  async registerUser(data: any): Promise<any> {
+  // Register a new user
+  async registerUser(data: any) {
     const { username, password, email } = data;
-    const PasswordHash = await hashPassword.hashPasswod(password);
-    const userData = { username, email, PasswordHash };
-    const user = await userRepositories.registerUser(userData);
+
+    const hashedPassword = await hashPassword.hashPasswod(password);
+
+    const user = await userRepository.createUser(
+      username,
+      email,
+      hashedPassword
+    );
+
     return user;
   }
 }
 
-export default new UserServices();
+export default new UserService();

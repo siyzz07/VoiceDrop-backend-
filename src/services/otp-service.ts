@@ -1,33 +1,46 @@
 import crypto from "crypto";
-import otpRepositorie from "../repositories/otp-repositorie";
+import otpRepository from "../repositories/otp-repositorie"
+import { MessageEnum } from "../enum/messageEnum";
 
-class OtpServices {
-  //-------------------------------------------generate opt
+class OtpService {
+
+  // Generate OTP
   generateOtp(length: number = 6): string {
-    const otp = crypto
+    return crypto
       .randomInt(0, Math.pow(10, length))
       .toString()
       .padStart(length, "0");
-    return otp;
   }
 
-  //-------------------------------------------
-  async sendBySms(phoneNumber: string, otp: string): Promise<void> {
-    // Implement your SMS sending logic here
-    // Example: using Twilio API
-    console.log(`Sending OTP ${otp} to phone number ${phoneNumber}`);
+  // Send OTP 
+  async sendOtp(phoneOrEmail: string, otp: string) {
+    console.log(`Sending OTP ${otp} to ${phoneOrEmail}`);
   }
 
-  //-------------------------------------------save user Otp
-  async saveUserOtp(email: string, otp: string) {
-    return await otpRepositorie.saveUserOpt(email, otp);
+  // Save OTP into database
+  async saveOtp(email: string, otp: string) {
+    await otpRepository.saveOtp(email, otp);
   }
 
-  // ------------------------------------------check opt match
-  async checkOtpMatch(email: string, otp: string) {
-    return await otpRepositorie.checkOtpMatch(email, otp);
+  
+
+  // Verify OTP  check the otp is correct or not
+  async verifyOtp(email: string, otp: string) {
+    const record = await otpRepository.findOtpByEmail(email);
+    
+    if (!record) {
+      return { success: false, message: MessageEnum.OTP_EXPIRED };
+    }
+
+    if (record.otp !== otp) {
+      return { success: false, message: MessageEnum.OTP_MATCH_FAILED };
+    }
+
+    
+    await otpRepository.deleteOtp(email);
+
+    return { success: true, message:MessageEnum.OTP_MATCH_SUCCESS };
   }
 }
 
-// Export an instance of the class
-export default new OtpServices();
+export default new OtpService();

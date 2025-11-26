@@ -1,31 +1,22 @@
 import User from "../model/user-model";
 
-class UserRepositories {
-  //--------------------------------------------check user Exist
-  async checkUsrExist(email: string) {
-    let user = await User.findOne({ email: email });
-    return user;
+class UserRepository {
+  
+  // Check if a user exists by email
+  async findByEmail(email: string) {
+    return await User.findOne({ email });
   }
 
-  //----------------------------------------------
-  async findUser(email: string) {
-    let user = await User.findOne({ email: email });
-    return user;
-  }
-
-  //--------------------------------------------
-  async registerUser(data: any) {
-    const { username, PasswordHash, email } = data;
-
-    const saveUser = new User({
+  // Create a new user
+  async createUser(username: string, email: string, hashedPassword: string) {
+    const newUser = new User({
       name: username,
-      password: PasswordHash,
-      email: email,
+      email,
+      password: hashedPassword,
     });
 
-    let user = saveUser.save();
-    return user;
+    return await newUser.save();
   }
 }
 
-export default new UserRepositories();
+export default new UserRepository();

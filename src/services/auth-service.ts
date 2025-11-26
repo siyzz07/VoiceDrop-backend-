@@ -1,15 +1,18 @@
 import { MessageEnum } from "../enum/messageEnum";
-import userRepositories from "../repositories/user-repositories";
+import { StatusEnum } from "../enum/statusEnum";
+import userRepository from "../repositories/user-repositories";
+import { AppError } from "../utils/appError";
 import emailService from "./email-service";
 import otpService from "./otp-service";
 
 class AuthService {
-  //----------------------------------------------------------- verify the  user email
-  async verifyEmail(email: string): Promise<string | void> {
-    const userExists = await userRepositories.checkUsrExist(email);
 
-    if (userExists) {
-      throw new Error(MessageEnum.USER_ALREADY_EXIST);
+  //----------------- verify email 
+   sendVerificationOtp = async (email: string): Promise<void> => {
+
+    const user = await userRepository.findByEmail(email);
+    if (user) {
+      throw new AppError(MessageEnum.USER_ALREADY_EXIST,StatusEnum.CONFLICT)
     }
 
     const otp = otpService.generateOtp();
@@ -17,31 +20,47 @@ class AuthService {
     await emailService.sendEmail({
       to: email,
       subject: "Welcome to Voice Drop",
-      text: `Thank you for signing up. Your OTP is ${otp}. Keep your OTP safe.`,
+      text: `Thank you for signing up. Your OTP is ${otp}. Keep your OTP safe.`
     });
-
-    await otpService.saveUserOtp(email, otp);
-    return email;
+    await otpService.saveOtp(email, otp);
+  
   }
 
-  //----------------------------------------------------------- check the otp mach or not
 
-  async checkOtpMatch(data: {
-    email: string;
-    otp: string;
-  }): Promise<boolean | void> {
-    const { email, otp } = data;
+  //----------------- resendOtp 
+   resendOpt = async (email:string):Promise<void> =>{
 
-    let result = await otpService.checkOtpMatch(email, otp);
-    if (!result) {
-      throw new Error(MessageEnum.SERVER_ERROR);
+  const user = await userRepository.findByEmail(email);
+    if (user) {
+      throw new AppError(MessageEnum.USER_ALREADY_EXIST,StatusEnum.CONFLICT)
     }
 
-    if (result.checkValue) {
-      return true;
-    }
 
-    throw new Error(MessageEnum.OTP_MATCH_FAILED);
+ const otp = otpService.generateOtp();
+
+    await emailService.sendEmail({
+      to: email,
+      subject: "Welcome to Voice Drop",
+      text: `You have requested to resend your OTP. Your new OTP is ${otp}. Please keep it secure`
+    });
+
+
+    await otpService.saveOtp(email, otp);
+  
+
+   }
+
+
+
+    //----------------- Check OTP validity
+  async verifyOtp(email: string, otp: string): Promise<boolean> {
+    const result = await otpService.verifyOtp(email, otp);
+
+    if (!result.success) {
+       throw new AppError(result.message,StatusEnum.BAD_REQUEST)
+    }
+    
+    return true;
   }
 }
 

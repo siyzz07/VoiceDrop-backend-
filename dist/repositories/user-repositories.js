@@ -4,27 +4,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = __importDefault(require("../model/user-model"));
-class UserRepositories {
-    //--------------------------------------------
-    async checkUsrExist(email) {
-        let user = await user_model_1.default.findOne({ email: email });
-        return user;
+class UserRepository {
+    // Check if a user exists by email
+    async findByEmail(email) {
+        return await user_model_1.default.findOne({ email });
     }
-    //----------------------------------------------
-    async findUser(email) {
-        let user = await user_model_1.default.findOne({ email: email });
-        return user;
-    }
-    //--------------------------------------------
-    async registerUser(data) {
-        const { username, PasswordHash, email } = data;
-        const saveUser = new user_model_1.default({
+    // Create a new user
+    async createUser(username, email, hashedPassword) {
+        const newUser = new user_model_1.default({
             name: username,
-            password: PasswordHash,
-            email: email,
+            email,
+            password: hashedPassword,
         });
-        let user = saveUser.save();
-        return user;
+        return await newUser.save();
     }
 }
-exports.default = new UserRepositories();
+exports.default = new UserRepository();
