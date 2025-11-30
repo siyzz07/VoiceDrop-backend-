@@ -24,8 +24,8 @@ const httpServer = http_1.default.createServer(app);
 app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 const allowedOrigins = [
-    "http://localhost:5174", // local dev
-    "http://localhost:5173", // local dev
+    "http://localhost:5174",
+    "http://localhost:5173",
     "https://voicedrop.vercel.app",
     "https://voice-drop-frontend.vercel.app"
 ];
