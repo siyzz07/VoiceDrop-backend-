@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const auth_service_1 = __importDefault(require("../services/auth-service"));
-const user_service_1 = __importDefault(require("../services/user-service"));
 const messageEnum_1 = require("../enum/messageEnum");
 const statusEnum_1 = require("../enum/statusEnum");
 class AuthController {
@@ -25,43 +24,8 @@ class AuthController {
                 .status(statusEnum_1.StatusEnum.OK)
                 .json({ success: true, message: messageEnum_1.MessageEnum.OTP_RESEND_SUCCESS, email });
         };
-        // // -------------------------------- Login User
-        // async loginUser(req: Request, res: Response): Promise<void> {
-        //   try {
-        //     const { email, password } = req.body;
-        //     const user = await userService.checkUserExist(email);
-        //     if (!user) {
-        //        res
-        //         .status(StatusEnum.NOT_FOUND)
-        //         .json({
-        //           message: "User not found. Please create an account first.",
-        //         });
-        //     }
-        //     const isPasswordCorrect = await userService.validatePassword(email, password);
-        //     if (!isPasswordCorrect) {
-        //        res
-        //         .status(StatusEnum.UNAUTHORIZED)
-        //         .json({
-        //           message: "Incorrect password. Please try again.",
-        //         });
-        //     }
-        //     const token = await generateToken(user);
-        //     res
-        //       .status(StatusEnum.OK)
-        //       .json({
-        //         token,
-        //         userName: user.name,
-        //         message: "Login successful",
-        //       });
-        //   } catch (error) {
-        //     console.error("Error in loginUser:", error);
-        //     res
-        //       .status(StatusEnum.SERVER_ERROR)
-        //       .json({ message: "Internal server error" });
-        //   }
-        // }
     }
-    // -------------------------------- Check OTP 
+    // -------------------------------- Check OTP
     async checkOtp(req, res) {
         const { email, otp } = req.body;
         const isValid = await auth_service_1.default.verifyOtp(email, otp);
@@ -73,18 +37,52 @@ class AuthController {
     }
     // -------------------------------- Register User
     async registerUser(req, res) {
-        try {
-            await user_service_1.default.registerUser(req.body);
+        let result = await auth_service_1.default.registerUser(req.body);
+        if (result) {
             res
                 .status(statusEnum_1.StatusEnum.OK)
-                .json({ message: "User created successfully." });
+                .json({ success: true, message: messageEnum_1.MessageEnum.USER_REGISTER_SUCCESS });
         }
-        catch (error) {
-            console.error("Error in registerUser:", error);
+    }
+    // // -------------------------------- Login User
+    async loginUser(req, res) {
+        const { email, password } = req.body;
+        const result = await auth_service_1.default.userLogin(email, password);
+        if (result) {
+            res.cookie("refreshToken", result.refreshToken, {
+                httpOnly: true,
+                secure: false,
+                maxAge: Number(process.env.COOKIE_MAX_AGE),
+            });
+            res.status(statusEnum_1.StatusEnum.OK).json({
+                success: true,
+                token: result.accessToken,
+                userName: result.userName,
+                message: messageEnum_1.MessageEnum.LOGIN_SUCCESS,
+            });
+        }
+    }
+    // -------------------------------- Refresh token
+    async generateNewAccessToken(req, res) {
+        const refreshToken = req.cookies.refreshToken;
+        console.log(refreshToken);
+        const accessToken = await auth_service_1.default.createNewAccessToken(refreshToken);
+        if (accessToken) {
             res
-                .status(statusEnum_1.StatusEnum.SERVER_ERROR)
-                .json({ message: "Internal server error. Please try again later." });
+                .status(statusEnum_1.StatusEnum.OK)
+                .json({ message: 'token created', accessToken });
         }
+    }
+    async logoutUser(req, res) {
+        console.log('reached');
+        res.clearCookie(`refreshToken`, {
+            httpOnly: true,
+            sameSite: "none",
+            secure: true,
+        });
+        res
+            .status(statusEnum_1.StatusEnum.OK)
+            .json({ message: 'Logout Success' });
     }
 }
 exports.default = new AuthController();

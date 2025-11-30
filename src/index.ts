@@ -7,6 +7,7 @@ import { initializeSocket } from "./realtimeCommunication.ts/connect";
 import { database } from "./realtimeCommunication.ts/db_update";
 import userRoute from "./routes/userRoutes";
 import { globalErrorHandler } from "./middleware/errorHandler";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 
@@ -19,7 +20,7 @@ connectDB();
 //   'https://voicedrop.vercel.app'
 // ];
 
-
+app.use(cookieParser());
 app.use(express.json());
 
 const allowedOrigins = [

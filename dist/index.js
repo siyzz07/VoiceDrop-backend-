@@ -12,6 +12,7 @@ const connect_1 = require("./realtimeCommunication.ts/connect");
 const db_update_1 = require("./realtimeCommunication.ts/db_update");
 const userRoutes_1 = __importDefault(require("./routes/userRoutes"));
 const errorHandler_1 = require("./middleware/errorHandler");
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const httpServer = http_1.default.createServer(app);
@@ -20,6 +21,7 @@ const httpServer = http_1.default.createServer(app);
 //   'http://localhost:5173',
 //   'https://voicedrop.vercel.app'
 // ];
+app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.json());
 const allowedOrigins = [
     "http://localhost:5174", // local dev

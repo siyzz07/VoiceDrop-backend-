@@ -7,99 +7,101 @@ import { StatusEnum } from "../enum/statusEnum";
 import { log } from "console";
 
 class AuthController {
-
   // -------------------------------- Verify Email (Send OTP)
-   verifyEmail = async (req: Request, res: Response): Promise<void> => {
-      const { email } = req.body;
-       await authService.sendVerificationOtp(email);
-      res
-        .status(StatusEnum.OK)
-        .json({ success:true, message: MessageEnum.OTP_SEND_SUCCESS, email });
-  }
+  verifyEmail = async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body;
+    await authService.sendVerificationOtp(email);
+    res
+      .status(StatusEnum.OK)
+      .json({ success: true, message: MessageEnum.OTP_SEND_SUCCESS, email });
+  };
 
   // -------------------------------- Resend OTP
-    resendOtp = async (req:Request,res:Response) :Promise<void >=>{
-      const {email} = req.body
-      await authService.resendOpt(email)
-          res
-            .status(StatusEnum.OK)
-            .json({success:true,message:MessageEnum.OTP_RESEND_SUCCESS,email})
+  resendOtp = async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body;
+    await authService.resendOpt(email);
+    res
+      .status(StatusEnum.OK)
+      .json({ success: true, message: MessageEnum.OTP_RESEND_SUCCESS, email });
+  };
 
-      } 
-
-
-  // -------------------------------- Check OTP 
+  // -------------------------------- Check OTP
   async checkOtp(req: Request, res: Response): Promise<void> {
-      const { email, otp } = req.body;
-      const isValid = await authService.verifyOtp(email, otp);
-      if (isValid) {
-         res
-          .status(StatusEnum.OK)
-          .json({ success:true , message: MessageEnum.OTP_MATCH_SUCCESS });
-      }   
+    const { email, otp } = req.body;
+    const isValid = await authService.verifyOtp(email, otp);
+    if (isValid) {
+      res
+        .status(StatusEnum.OK)
+        .json({ success: true, message: MessageEnum.OTP_MATCH_SUCCESS });
+    }
   }
 
   // -------------------------------- Register User
   async registerUser(req: Request, res: Response): Promise<void> {
-    try {
-      await userService.registerUser(req.body);
+    let result = await authService.registerUser(req.body);
 
+    if (result) {
       res
         .status(StatusEnum.OK)
-        .json({ message: "User created successfully." });
-
-    } catch (error) {
-      console.error("Error in registerUser:", error);
-
-      res
-        .status(StatusEnum.SERVER_ERROR)
-        .json({ message: "Internal server error. Please try again later." });
+        .json({ success: true, message: MessageEnum.USER_REGISTER_SUCCESS });
     }
   }
 
   // // -------------------------------- Login User
-  // async loginUser(req: Request, res: Response): Promise<void> {
-  //   try {
-  //     const { email, password } = req.body;
+  async loginUser(req: Request, res: Response): Promise<void> {
+    const { email, password } = req.body;
+    const result = await authService.userLogin(email, password);
 
-  //     const user = await userService.checkUserExist(email);
+    if (result) {
+      res.cookie("refreshToken", result.refreshToken, {
+        httpOnly: true,
+        secure: false,
+        maxAge: Number(process.env.COOKIE_MAX_AGE),
+      });
 
-  //     if (!user) {
-  //        res
-  //         .status(StatusEnum.NOT_FOUND)
-  //         .json({
-  //           message: "User not found. Please create an account first.",
-  //         });
-  //     }
 
-  //     const isPasswordCorrect = await userService.validatePassword(email, password);
+      res.status(StatusEnum.OK).json({
+        success: true,
+        token: result.accessToken,
+        userName: result.userName,
+        message: MessageEnum.LOGIN_SUCCESS,
+      });
 
-  //     if (!isPasswordCorrect) {
-  //        res
-  //         .status(StatusEnum.UNAUTHORIZED)
-  //         .json({
-  //           message: "Incorrect password. Please try again.",
-  //         });
-  //     }
+      
 
-  //     const token = await generateToken(user);
+    }
+  }
 
-  //     res
-  //       .status(StatusEnum.OK)
-  //       .json({
-  //         token,
-  //         userName: user.name,
-  //         message: "Login successful",
-  //       });
+  // -------------------------------- Refresh token
+  async generateNewAccessToken (req:Request,res:Response):Promise<void>{
+    
+    const refreshToken  = req.cookies.refreshToken
+    console.log(refreshToken);
+    
+    const accessToken= await authService.createNewAccessToken(refreshToken)
 
-  //   } catch (error) {
-  //     console.error("Error in loginUser:", error);
+    if(accessToken){
+    res
+      .status(StatusEnum.OK)
+      .json({message:'token created',accessToken})
+    }
+  }
 
-  //     res
-  //       .status(StatusEnum.SERVER_ERROR)
-  //       .json({ message: "Internal server error" });
-  //   }
-  // }
+
+
+   async logoutUser(req:Request,res:Response):Promise<void>{
+  console.log('reached');
+  
+      res.clearCookie(`refreshToken`, {
+        httpOnly: true,
+        sameSite: "none",
+        secure: true,
+      });
+
+      res
+        .status(StatusEnum.OK)
+        .json({ message: 'Logout Success' });
+  }
 }
 
 export default new AuthController();

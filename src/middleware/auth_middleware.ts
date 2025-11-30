@@ -12,7 +12,7 @@ declare global {
     }
 }
 
-export  const verifyToken=(req: Request, res: Response, next: NextFunction):any=> {
+export  const verifyToken  = (req: Request, res: Response, next: NextFunction):any=> {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
 
@@ -22,11 +22,14 @@ export  const verifyToken=(req: Request, res: Response, next: NextFunction):any=
 
     jwt.verify(token, process.env.JWT_ACCES_SECRET_KEY as string, (err, user) => {
         if (err) {
-            
-            return res.status(403).json({ message: "Token is not valid" });
+                console.log('token from here');
+                
+            return res.status(401).json({ message: "Token expired" });
+        }else{
+
+            req.user = user;
+            next();
         }
         
-        req.user = user;
-        next();
     });
 }

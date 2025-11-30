@@ -1,39 +1,42 @@
 "use strict";
-// import { Request, Response } from "express";
-// // import roomSevice from "../services/room-sevice";
-// import { log } from "console";
-// class RoomController {
-//   //-------- create a user -----------------
-//   async createRoom(req: Request, res: Response): Promise<any> {
-//     try {
-//   console.log("eraeee");
-//       req.body.owner = req.user.userId;
-//       let addroom = await roomSevice.addRoom(req.body);
-//       if (addroom) {
-//         return res
-//           .status(201)
-//           .json({
-//             message: "Room created successfuly",
-//             roomId: addroom.roomId,
-//           });
-//       }
-//     } catch (error: any) {
-//       console.log(error.message);
-//     }
-//   }
-// //--------------------------------------------------------------------------check the roomexist or not
-//   async checkRoomExistandRoomUsers(req: Request, res: Response): Promise<any> {
-//     try {
-//       let roomId = req.params.roomId;
-//       let bool = await roomSevice.roomExistCheck(roomId);
-//       let room:any=[]
-//       if(bool==true){
-//           room=await roomSevice.specificRoomdata(roomId)
-//       }
-//       return res.json({ check: bool,room:room });
-//     } catch (error: any) {
-//       console.log(error.message);
-//     }
-//   }
-// }
-// export default new RoomController();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const room_sevice_1 = __importDefault(require("../services/room-sevice"));
+class RoomController {
+    //-------- create a user -----------------
+    async createRoom(req, res) {
+        try {
+            req.body.owner = req.user.userId;
+            let addroom = await room_sevice_1.default.addRoom(req.body);
+            if (addroom) {
+                return res
+                    .status(201)
+                    .json({
+                    message: "Room created successfuly",
+                    roomId: addroom.roomId,
+                });
+            }
+        }
+        catch (error) {
+            console.log(error.message);
+        }
+    }
+    //--------------------------------------------------------------------------check the roomexist or not
+    async checkRoomExistandRoomUsers(req, res) {
+        try {
+            let roomId = req.params.roomId;
+            let bool = await room_sevice_1.default.roomExists(roomId);
+            let room = [];
+            if (bool == true) {
+                room = await room_sevice_1.default.getRoomData(roomId);
+            }
+            return res.json({ check: bool, room: room });
+        }
+        catch (error) {
+            console.log(error.message);
+        }
+    }
+}
+exports.default = new RoomController();
