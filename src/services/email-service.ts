@@ -8,6 +8,8 @@ interface SendEmailOptions {
 }
 
 class EmailService {
+
+  // sned email
   async sendEmail({
     to,
     subject,
@@ -24,10 +26,13 @@ class EmailService {
     };
 
     try {
-
+      console.log('email send on proccess...');
+      
       const info = await transporter.sendMail(mailOptions);
       console.log("Email sent: " + info.response);
     } catch (error) {
+      console.log(error);
+      
       console.error("Error sending email:", error);
     }
   }
