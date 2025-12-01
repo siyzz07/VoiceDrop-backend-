@@ -15,7 +15,6 @@ const verifyToken = (req, res, next) => {
     }
     jsonwebtoken_1.default.verify(token, process.env.JWT_ACCES_SECRET_KEY, (err, user) => {
         if (err) {
-            console.log('token from here');
             return res.status(401).json({ message: "Token expired" });
         }
         else {
