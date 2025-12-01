@@ -73,6 +73,7 @@ class AuthController {
                 .json({ message: 'token created', accessToken });
         }
     }
+    // logout user
     async logoutUser(req, res) {
         console.log('reached');
         res.clearCookie(`refreshToken`, {

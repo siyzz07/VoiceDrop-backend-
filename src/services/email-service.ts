@@ -10,6 +10,7 @@ interface SendEmailOptions {
 class EmailService {
 
   // sned email
+  // sned email
   async sendEmail({
     to,
     subject,

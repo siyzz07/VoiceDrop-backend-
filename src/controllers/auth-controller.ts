@@ -88,7 +88,7 @@ class AuthController {
   }
 
 
-
+// logout user
    async logoutUser(req:Request,res:Response):Promise<void>{
   console.log('reached');
   
