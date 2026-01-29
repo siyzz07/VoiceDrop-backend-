@@ -26,5 +26,11 @@ export const globalErrorHandler = (
     return 
   }
 
+  // Fallback for unknown errors (e.g. Nodemailer, DB)
+  res.status(StatusEnum.SERVER_ERROR).json({
+    success: false,
+    message: MessageEnum.SERVER_ERROR
+  });
+
   
 };

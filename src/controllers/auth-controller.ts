@@ -94,8 +94,7 @@ class AuthController {
   
       res.clearCookie(`refreshToken`, {
         httpOnly: true,
-        sameSite: "none",
-        secure: true,
+        secure: false, // Match loginUser
       });
 
       res
