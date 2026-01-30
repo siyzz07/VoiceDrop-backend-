@@ -19,6 +19,7 @@ export const initializeSocket = (httpServer: any) => {
     cors: {
       origin: [
         "https://voicedrop.vercel.app",
+        "https://voice-drop-frontend.vercel.app",
         "http://localhost:5174",
         "http://localhost:5173",
       ],

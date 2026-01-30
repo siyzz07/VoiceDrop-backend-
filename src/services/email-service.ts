@@ -34,7 +34,7 @@ class EmailService {
     } catch (error) {
       console.log(error);
       
-      console.error("Error sending email:", error);
+      console.error("❌ CRITICAL: Error sending email:", error);
     }
   }
 }
