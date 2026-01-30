@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export const transporter = nodemailer.createTransport({
+  pool: true,
   service: "gmail",
   auth: {
     type: "OAuth2",

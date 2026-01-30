@@ -21,7 +21,7 @@ class AuthService {
 
     const otp = otpService.generateOtp();
 
-    await emailService.sendEmail({
+    emailService.sendEmail({
       to: email,
       subject: "Welcome to Voice Drop",
       text: `Thank you for signing up. Your OTP is ${otp}. Keep your OTP safe.`
@@ -42,7 +42,7 @@ class AuthService {
 
  const otp = otpService.generateOtp();
 
-    await emailService.sendEmail({
+    emailService.sendEmail({
       to: email,
       subject: "Welcome to Voice Drop",
       text: `You have requested to resend your OTP. Your new OTP is ${otp}. Please keep it secure`
